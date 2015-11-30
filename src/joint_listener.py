@@ -4,7 +4,8 @@ import rospy
 import tf
 
 rospy.init_node('kinect_listener', anonymous=True)
-BASE_FRAME="/openni_depth_frame"
+'''BASE_FRAME="/openni_depth_frame"'''
+BASE_FRAME="/tracker_depth_frame"
 FRAMES=[
         'head',
         'neck',
@@ -24,7 +25,8 @@ FRAMES=[
         ]
         
 LAST = rospy.Duration()        
-user="_1"
+n_user="1"
+user='/tracker/user_'+n_user
 #creation of a Trasform Listener node
 listener=tf.TransformListener()
 while not rospy.is_shutdown():
@@ -33,7 +35,7 @@ while not rospy.is_shutdown():
         for frame in FRAMES:
             #listener.waitForTransform(BASE_FRAME, "/left_knee_1", LAST, rospy.Duration(4.0))
             #print BASE_FRAME
-            (trans,rot) = listener.lookupTransform(BASE_FRAME, frame+user, LAST)
+            (trans,rot) = listener.lookupTransform(BASE_FRAME, user+'/'+frame, LAST)
             #print trans
             frames.append((frame,trans,rot))
         print frames

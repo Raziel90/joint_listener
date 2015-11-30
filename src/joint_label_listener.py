@@ -5,7 +5,8 @@ import tf
 import time
 
 def get_joint_info(listener,user):
-    BASE_FRAME="/openni_depth_frame"
+'''BASE_FRAME="/openni_depth_frame"'''
+BASE_FRAME="/tracker_depth_frame"
     FRAMES=[
             'head',
             'neck',
@@ -23,8 +24,9 @@ def get_joint_info(listener,user):
             'right_knee',
             'right_foot',
             ]
+            
     LAST = rospy.Duration(0.1)        
-    user="_"+str(user)
+    user="/tracker/user_"+str(user)
     
 
     try:
@@ -34,7 +36,7 @@ def get_joint_info(listener,user):
             listener.waitForTransform(BASE_FRAME, frame+user,now, rospy.Duration(4.0))
             #currenttime=listener.getLatestCommonTime(BASE_FRAME, frame+user)
             
-            (trans,rot) = listener.lookupTransform(BASE_FRAME, frame+user, now)
+            (trans,rot) = listener.lookupTransform(BASE_FRAME,  user+'/'+frame, now)
                 #print trans
                 #print lasttime-listener.getLatestCommonTime(BASE_FRAME, frame+user)
             frames.append((frame,trans,rot))

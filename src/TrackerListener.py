@@ -24,7 +24,7 @@ class TrackerListener:
            the frames relative to the base frame
            all of this arguments have default values so that it can be used without setting parameters
         """
-        def __init__(self,name='body_joint_listener',user=1,BASE_FRAME = '/openni_depth_frame',FRAMES = [
+        def __init__(self,name='body_joint_listener',user=1,BASE_FRAME = '/tracker_depth_frame',FRAMES = [
                                                                                                     'head',
                                                                                                     'neck',
                                                                                                     'torso',
@@ -44,11 +44,11 @@ class TrackerListener:
 
          rospy.init_node(name,anonymous='True')
          self.listener=tf.TransformListener()
-         self.user='_'+str(user)
+         self.user="/tracker/user_"+str(user)
          self.BASE_FRAME=BASE_FRAME
          self.FRAMES=FRAMES        
          print 'waiting for joint points of user '+str(user)+'...'
-         self.listener.waitForTransform(BASE_FRAME, self.FRAMES[0]+self.user,rospy.Time(), rospy.Duration(4.0))
+         self.listener.waitForTransform(BASE_FRAME, self.user+'/'+self.FRAMES[0],rospy.Time(), rospy.Duration(4.0))
 
         
         def get_joint_info(self):
@@ -58,10 +58,10 @@ class TrackerListener:
                 now=rospy.Time.now()
                 for frame in self.FRAMES:
                     
-                    self.listener.waitForTransform(self.BASE_FRAME, frame+self.user,now, rospy.Duration(4.0))
+                    self.listener.waitForTransform(self.BASE_FRAME, self.user+'/'+frame,now, rospy.Duration(4.0))
                     #currenttime=listener.getLatestCommonTime(BASE_FRAME, frame+user)
                     
-                    (trans,rot) = self.listener.lookupTransform(self.BASE_FRAME, frame+self.user, now)
+                    (trans,rot) = self.listener.lookupTransform(self.BASE_FRAME, self.user+'/'+frame, now)
                         #print trans
                         #print lasttime-listener.getLatestCommonTime(BASE_FRAME, frame+user)
                     frames.append((frame,trans,rot))
